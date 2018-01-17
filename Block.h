@@ -9,7 +9,7 @@ A blockchain is made up of a series of blocks which contain data and each block 
 
 class Block {
 public:
-	string sPrevHash;
+	string sPrevHash; // Each block is linked to the previous block
 	Block(unit32_t nIndexIn, const string &sDataIn);
 	string GetHash();
 	void MineBlock(uint32_t nDifficulty);
@@ -20,5 +20,6 @@ private:
 	string _sData;
 	string _sHash;
 	time_t _tTime;
+
 	string _CalculateHash() const;
 };
