@@ -1,5 +1,7 @@
+#include<stdint.h>
 #include<cstdint>
 #include<iostream>
+#include<sstream>
 
 using namespace std;
 
