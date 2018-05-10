@@ -4,51 +4,42 @@
 class MyBlock {
 private:
 	int index;
-	char * data;
+	const char * data;
 	char * hash;
 	char * calculateHash() const;
 public:
 	char * previousHash;
-	//MyBlock(int, char *);
+	MyBlock(int, char *);
 	char * getHash();
 	int getIndex();
-	void setIndex(int);
-	char * getData();
-	void setData(char *);
+	const char * getData();
 	void mineMyBlock(int);
 };
-//MyBlock::MyBlock(int indexIn, char * dataIn) : index(indexIn), data(dataIn) {}
+MyBlock::MyBlock(int indexIn, char * dataIn) : index(indexIn), data(dataIn) {}
 char * MyBlock::getHash() {
 	return this->hash;
 }
 int MyBlock::getIndex() {
 	return this->index;
 }
-void MyBlock::setIndex(int index) {
-	this->index = index;
-}
-char * MyBlock::getData() {
+const char * MyBlock::getData() {
 	return this->data;
 }
-void MyBlock::setData(char * data) {
-	this->data=data;
-}
 void MyBlock::mineMyBlock(int challenge) {
-	//Math Problem
+	//cout<<"MyBlock mined: "<<hash<<endl;
 }
 inline char * MyBlock::calculateHash() const {
-	// SHA 256 Hashing
 	return "Calculate Hash Data....";
 }
 /**************************************/
-struct Node {
+class Node {
 public:
 	MyBlock myBlock;
 	Node * next;
-} * start;
+};
+Node * start;
 /**************************************/
 class Chain {
-private:
 public:
 	Node * createNodeFromMyBlock(MyBlock);
 	void insertLast(MyBlock);
@@ -59,8 +50,7 @@ public:
 	}
 };
 Node * Chain::createNodeFromMyBlock(MyBlock myBlock) {
-	cout<<"------"<<"Creating Node from Block"<<"------"<<endl;
-	struct Node * temp = (struct Node *) malloc(sizeof(struct Node));
+	Node * temp;
 	if (temp == NULL) {
 		cout<<"Memory not allocated "<<endl;
 		return 0;
@@ -71,30 +61,24 @@ Node * Chain::createNodeFromMyBlock(MyBlock myBlock) {
 	}
 }
 void Chain::insertLast(MyBlock myBlock) {
-	cout<<"------"<<"Insert in last"<<"------"<<endl;
-	struct Node * temp, * s;
+	Node * temp, * s;
 	temp = createNodeFromMyBlock(myBlock);
-	cout<<"Data In Node To Be Added::"<<temp->myBlock.getData();
 	s = start;
 	while (s->next != NULL) {
-		cout<<"Data::"<<s->myBlock.getData()<<endl;
 		s = s->next;
 	}
 	s->next = temp;
 }
 Node * Chain::getLast() {
-	cout<<"------"<<"Gettting Last Block"<<"------"<<endl;
-	struct Node * s;
+	Node * s;
 	s = start;
 	while (s->next != NULL) {
-		cout<<"Data::"<<s->myBlock.getData()<<endl;
 		s = s->next;
 	}
 	return s;
 }
 void Chain::display() {
-	cout<<"------"<<"Displaying"<<"------"<<endl;
-	struct Node * temp;
+	Node * temp;
 	if (start == NULL) {
 		cout<<"The Chain is Empty"<<endl;
 		return;
@@ -105,7 +89,7 @@ void Chain::display() {
 		cout<<temp->myBlock.getIndex()<<"-"<<temp->myBlock.getData()<<"->";
 		temp = temp->next;
 	}
-	cout<<"END"<<endl;
+	cout<<"NULL"<<endl;
 }
 /**************************************/
 class MyBlockchain {
@@ -113,40 +97,33 @@ private:
 	int challenge;
 	Chain chain;
 
-	MyBlock getLastMyBlock();
+	MyBlock getLastMyBlock() const;
 public:
 	MyBlockchain();
 	void addMyBlock(MyBlock);
 	void display();
-	void search();
 };
 MyBlockchain::MyBlockchain() {
-	cout<<"Creating Genesis MyBlock"<<endl;
-	MyBlock block;
-	block.setData("Genesis");
-	block.setIndex(0);
-	start = chain.createNodeFromMyBlock(block);//MyBlock(0, "Genesis MyBlock"));
+//	cout<<"Creating Genesis MyBlock"<<endl;
+	start = chain.createNodeFromMyBlock(MyBlock(0, "Genesis MyBlock"));
 //	cout<<"Setting Challenge to 6"<<endl;
 	challenge = 6;
 }
 void MyBlockchain::addMyBlock(MyBlock bNew) {
-	cout<<"Adding MyBlock to chain"<<endl;
-	//bNew.previousHash = getLastMyBlock().getHash();
+//	cout<<"Adding MyBlock to chain"<<endl;
+	bNew.previousHash = getLastMyBlock().getHash();
 //	cout<<"Getting Hash"<<endl;
-	//bNew.mineMyBlock(challenge);
+	bNew.mineMyBlock(challenge);
 //	cout<<"Mine MyBlock"<<endl;
 	chain.insertLast(bNew);
 //	cout<<"Insert in Laast"<<endl;
 }
-MyBlock MyBlockchain::getLastMyBlock(){
+MyBlock MyBlockchain::getLastMyBlock() const {
 	cout<<"Getting last MyBlock->"<<chain.getLast()->myBlock.getData()<<endl;
 	return chain.getLast()->myBlock;
 }
 void MyBlockchain::display() {
 	chain.display();
-}
-void MyBlockchain::search() {
-	// TODO
 }
 /**************************************/
 int main() {
@@ -191,43 +168,31 @@ int main() {
 	*/
 
 
-	/*
+/*
 	int k = 0;
-	MyBlockchain chain = MyBlockchain();
 	char * d;
+	MyBlockchain chain = MyBlockchain();
 	cin>>d;
-	
-	MyBlock b1;
-	b1.setData(d);
-	b1.setIndex(++k);
-	//cout<<b1.getData()<<endl;
+	MyBlock b1 (++k, d);
+	cout<<b1.getData()<<endl;
 	chain.addMyBlock(b1);
 	chain.display();
-	
 	char * dd;
-	cin>>dd;
-	
-	MyBlock b2;// (++k, d);
-	b2.setData(dd);
-	b2.setIndex(++k);
-	//cout<<b1.getData()<<"->";
-	//cout<<b2.getData()<<endl;
-	chain.addMyBlock(b2);
+	cin>>d;
+	MyBlock b2 (++k, d);
+	cout<<b1.getData()<<"->";
+	cout<<b2.getData()<<endl;
+	chain.addMyBlock(b1);
 	chain.display();
-	
 	char * ddd;
-	cin>>ddd;
-	
-	MyBlock b3;// (++k, d);
-	b1.setData(ddd);
-	b1.setIndex(++k);
-	//cout<<b1.getData()<<"->";
-	//cout<<b2.getData()<<"->";
-	//cout<<b3.getData()<<endl;
-	chain.addMyBlock(b3);
+	cin>>d;
+	MyBlock b3 (++k, d);
+	cout<<b1.getData()<<"->";
+	cout<<b2.getData()<<"->";
+	cout<<b3.getData()<<endl;
+	chain.addMyBlock(b1);
 	chain.display();
-
-	*/
+*/
 
 	int i = 0, j = 0;
 	cout<<"Welcome To MyBlockchain DEMO Application Program"<<endl;
@@ -245,16 +210,13 @@ int main() {
 		cin>>i;
 		switch(i) {
 			case 1:
-				char dota[10];
+				//char data[10];
 				cout<<"Enter data::"<<endl;
-				//char * dota;
+				char * dota;
 				cin.sync();
 				cin>>dota;
-				MyBlock bNew;// = new MyBlock();
-				//(++j, dota);
-				bNew.setData(dota);
-				bNew.setIndex(++j);
-				cout<<"Before Adding to Block::"<<bNew.getData()<<endl;
+				MyBlock bNew(++j, dota);
+				cout<<"Before Adding to Block"<<bNew.getData()<<endl;
 				bChain.addMyBlock(bNew);
 				//cout<<"Last Block Data"<<bChain.getLastMyBlock().getData()<<endl;
 				break;
@@ -267,6 +229,5 @@ int main() {
 	} while(i != 3);
 	cout<<"Closing MyBlockchain..."<<endl;
 	cin>>i;
-	
 	return 0;
 }
